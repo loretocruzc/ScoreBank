@@ -2,10 +2,123 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>ScoreBank Scanner</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f3f5f9;
+      color: #172033;
+      margin: 0;
+      padding: 30px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background: white;
+      padding: 30px;
+      border-radius: 18px;
+    }
+
+    h1 {
+      margin-top: 0;
+    }
+
+    .button {
+      display: inline-block;
+      background: #172033;
+      color: white;
+      padding: 14px 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    input {
+      display: none;
+    }
+
+    #result {
+      margin-top: 25px;
+      padding: 18px;
+      background: #eef7f0;
+      border-radius: 12px;
+      display: none;
+    }
+  </style>
 </head>
+
 <body>
-  <h1>ScoreBank Scanner v1</h1>
-  <p>Primer paso del motor de ScoreBank.</p>
+  <div class="container">
+    <h1>ScoreBank Scanner v1</h1>
+
+    <p>
+      Selecciona la carpeta principal de ScoreBank para contar sus archivos.
+    </p>
+
+    <label class="button" for="folderInput">
+      Seleccionar carpeta ScoreBank
+    </label>
+
+    <input
+      id="folderInput"
+      type="file"
+      webkitdirectory
+      directory
+      multiple
+    >
+
+    <div id="result"></div>
+  </div>
+
+  <script>
+    const folderInput = document.getElementById("folderInput");
+    const result = document.getElementById("result");
+
+    folderInput.addEventListener("change", function () {
+      const files = Array.from(folderInput.files);
+
+      let pdf = 0;
+      let xml = 0;
+      let audio = 0;
+      let others = 0;
+
+      files.forEach(function (file) {
+        const extension =
+          file.name.split(".").pop().toLowerCase();
+
+        if (extension === "pdf") {
+          pdf++;
+        } else if (
+          extension === "xml" ||
+          extension === "musicxml" ||
+          extension === "mxl"
+        ) {
+          xml++;
+        } else if (
+          extension === "mp3" ||
+          extension === "wav" ||
+          extension === "m4a"
+        ) {
+          audio++;
+        } else {
+          others++;
+        }
+      });
+
+      result.style.display = "block";
+
+      result.innerHTML = `
+        <strong>Escaneo completado</strong><br><br>
+        Total de archivos: ${files.length}<br>
+        PDF: ${pdf}<br>
+        MusicXML/XML: ${xml}<br>
+        Audio: ${audio}<br>
+        Otros: ${others}
+      `;
+    });
+  </script>
 </body>
 </html>
